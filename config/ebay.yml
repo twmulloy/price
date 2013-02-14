@@ -1,0 +1,22 @@
+defaults: &defaults
+  sandbox:
+    dev_id: 474c440a-3deb-4e3d-b66c-5e7e6f815c4d
+    app_id: Sakaguch-6a31-4351-8a0c-7b0e1325ab5e
+    cert_id: 07580871-0bd4-456c-9024-e44fef972ed0
+  production:
+    dev_id: 474c440a-3deb-4e3d-b66c-5e7e6f815c4d
+    app_id: Sakaguch-00ac-4d23-be74-fae4556d014b
+    cert_id: 1ec0fd88-fa42-4315-be1a-18a6cb35538f
+  api:
+    finding:
+      base_uri: http://svcs.ebay.com/services/search/FindingService/v1
+      version: 1.12.0
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
