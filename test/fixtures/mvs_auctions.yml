@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  mvs_game_id: 1
+  item_id: 1
+  title: MyString
+  url: MyString
+  small: MyString
+  medium: MyString
+  large: MyString
+  auction_end: 2013-02-16 22:20:04
+  ended_at: 2013-02-16 22:20:04
+  price: 9.99
+  approved: false
+
+two:
+  mvs_game_id: 1
+  item_id: 1
+  title: MyString
+  url: MyString
+  small: MyString
+  medium: MyString
+  large: MyString
+  auction_end: 2013-02-16 22:20:04
+  ended_at: 2013-02-16 22:20:04
+  price: 9.99
+  approved: false

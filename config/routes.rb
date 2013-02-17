@@ -1,5 +1,11 @@
 Price::Application.routes.draw do
 
+  resources :mvs_auctions
+
+
+  resources :mvs_games
+
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

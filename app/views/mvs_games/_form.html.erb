@@ -1,0 +1,56 @@
+<%= form_for @mvs_game, :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="control-group">
+    <%= f.label :year, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.number_field :year, :class => 'number_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :ngh, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.number_field :ngh, :class => 'number_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :developer, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :developer, :class => 'text_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :series, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :series, :class => 'text_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :title_english, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :title_english, :class => 'text_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :title_romaji, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :title_romaji, :class => 'text_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :title_katakana, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :title_katakana, :class => 'text_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :meg, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.number_field :meg, :class => 'number_field' %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                mvs_games_path, :class => 'btn' %>
+  </div>
+<% end %>

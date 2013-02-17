@@ -1,0 +1,50 @@
+<%- model_class = MvsGame -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize %></h1>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:id) %></th>
+      <th><%= model_class.human_attribute_name(:year) %></th>
+      <th><%= model_class.human_attribute_name(:ngh) %></th>
+      <th><%= model_class.human_attribute_name(:developer) %></th>
+      <th><%= model_class.human_attribute_name(:series) %></th>
+      <th><%= model_class.human_attribute_name(:title_english) %></th>
+      <th><%= model_class.human_attribute_name(:title_romaji) %></th>
+      <th><%= model_class.human_attribute_name(:title_katakana) %></th>
+      <th><%= model_class.human_attribute_name(:meg) %></th>
+      <!-- <th><%= model_class.human_attribute_name(:created_at) %></th> -->
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @mvs_games.each do |mvs_game| %>
+      <tr>
+        <td><%= link_to mvs_game.id, mvs_game_path(mvs_game) %></td>
+        <td><%= mvs_game.year %></td>
+        <td><%= mvs_game.ngh %></td>
+        <td><%= mvs_game.developer %></td>
+        <td><%= mvs_game.series %></td>
+        <td><%= mvs_game.title_english %></td>
+        <td><%= mvs_game.title_romaji %></td>
+        <td><%= mvs_game.title_katakana %></td>
+        <td><%= mvs_game.meg %></td>
+        <!-- <td><%=l mvs_game.created_at %></td> -->
+        <td>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_mvs_game_path(mvs_game), :class => 'btn btn-mini' %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      mvs_game_path(mvs_game),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-mini btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to t('.new', :default => t("helpers.links.new")),
+            new_mvs_game_path,
+            :class => 'btn btn-primary' %>

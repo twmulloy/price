@@ -8,6 +8,10 @@ class Ebay
 
   end
 
+  def find_items
+
+  end
+
   def get_sold_listing
     p get_sold_listing_pagination
   end

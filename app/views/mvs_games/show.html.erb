@@ -1,0 +1,35 @@
+<%- model_class = MvsGame -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human %></h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:year) %>:</strong></dt>
+  <dd><%= @mvs_game.year %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:ngh) %>:</strong></dt>
+  <dd><%= @mvs_game.ngh %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:developer) %>:</strong></dt>
+  <dd><%= @mvs_game.developer %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:series) %>:</strong></dt>
+  <dd><%= @mvs_game.series %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:title_english) %>:</strong></dt>
+  <dd><%= @mvs_game.title_english %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:title_romaji) %>:</strong></dt>
+  <dd><%= @mvs_game.title_romaji %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:title_katakana) %>:</strong></dt>
+  <dd><%= @mvs_game.title_katakana %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:meg) %>:</strong></dt>
+  <dd><%= @mvs_game.meg %></dd>
+</dl>
+
+<div class="form-actions">
+  <%= link_to t('.back', :default => t("helpers.links.back")),
+              mvs_games_path, :class => 'btn'  %>
+  <%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_mvs_game_path(@mvs_game), :class => 'btn' %>
+  <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              mvs_game_path(@mvs_game),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %>
+</div>

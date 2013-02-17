@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  year: 1
+  ngh: 1
+  developer: MyString
+  series: MyString
+  title_english: MyString
+  title_romaji: MyString
+  title_katakana: MyString
+  meg: 1
+
+two:
+  year: 1
+  ngh: 1
+  developer: MyString
+  series: MyString
+  title_english: MyString
+  title_romaji: MyString
+  title_katakana: MyString
+  meg: 1
