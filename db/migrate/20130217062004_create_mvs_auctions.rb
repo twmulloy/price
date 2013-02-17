@@ -2,12 +2,9 @@ class CreateMvsAuctions < ActiveRecord::Migration
   def change
     create_table :mvs_auctions do |t|
       t.integer :mvs_game_id
-      t.integer :item_id
       t.string :title
       t.string :url
-      t.string :small
-      t.string :medium
-      t.string :large
+      t.string :thumb
       t.datetime :auction_end
       t.datetime :ended_at
       t.decimal :price
@@ -16,6 +13,7 @@ class CreateMvsAuctions < ActiveRecord::Migration
       t.timestamps
     end
 
+    add_column :mvs_auctions, :item_id, :bigint
     add_index :mvs_auctions, [:mvs_game_id, :item_id]
   end
 end

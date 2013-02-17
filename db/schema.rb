@@ -15,18 +15,16 @@ ActiveRecord::Schema.define(:version => 20130217062004) do
 
   create_table "mvs_auctions", :force => true do |t|
     t.integer  "mvs_game_id"
-    t.integer  "item_id"
     t.string   "title"
     t.string   "url"
-    t.string   "small"
-    t.string   "medium"
-    t.string   "large"
+    t.string   "thumb"
     t.datetime "auction_end"
     t.datetime "ended_at"
     t.decimal  "price"
-    t.boolean  "approved",    :default => true
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.boolean  "approved",                 :default => true
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
+    t.integer  "item_id",     :limit => 8
   end
 
   add_index "mvs_auctions", ["mvs_game_id", "item_id"], :name => "index_mvs_auctions_on_mvs_game_id_and_item_id"

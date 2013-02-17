@@ -3,58 +3,134 @@ class Ebay
   include EbayConfig
   include HTTParty
 
+
+
   # no initializer needed since credentials are passed with each request
   def initialize
 
   end
 
-  def find_items
+  def find_auctions_for_all_mvs_games
+
+    games = MvsGame.all
+
+    games.each do |game|
+      find_auctions_for_mvs_game_by_id(game.id)
+    end
 
   end
 
-  def get_sold_listing
-    p get_sold_listing_pagination
+  def find_auctions_for_mvs_game_by_id mvs_game_id
+
+    method = 'findItemsAdvanced'
+    
+    auctions = []
+
+    game = MvsGame.find(mvs_game_id)
+
+    # determine if game is part of a series and exclude other games in series
+    query = "\"#{game.title_english}\" MVS (cart,cartridge) -(hyper,marquee,artwork,flyers,lot)"
+
+    total_pages = 1
+    limit = 100
+    offset = 1
+
+    params = {
+      # payload
+      'keywords' => query,
+      'descriptionSearch' => true,
+
+      # pagination
+      'paginationInput.entriesPerPage' => limit,
+      'paginationInput.pageNumber' => offset
+    }
+    
+    response = send_request(method, params)
+
+    # push first page to complete auctions listing
+    auctions += response['searchResult'].first['item']
+
+    pagination = get_pagination(response)
+
+    # update pagination details
+    total_pages = pagination[:total_pages]
+
+    # more than a single page, get necessary variables to begin looping to retrieve
+    if total_pages > 1
+      begin  
+
+        # since we have the first page already we can increment by 1 to the 2nd page
+        offset += 1
+
+        # modify params hash
+        params['paginationInput.pageNumber'] = offset
+
+        # get the current page data
+        auctions += send_request(method, params)['searchResult'].first['item']
+      end until offset >= total_pages
+    end
+
+    create_mvs_auctions(mvs_game_id, auctions)
+
   end
 
 private
 
-  # by default return the first page
-  def get_sold_listing_page offset = 1, limit = 100
+  # iterate through all auctions from ebay api and create MvsAuction models
+  def create_mvs_auctions(mvs_game_id, auctions)
+    
+    auctions.each do |auction|
+
+      mvs_auction = MvsAuction.find_or_initialize_by_item_id(auction['itemId'].first)
+
+      # calculate price (of strings)
+      price = auction['sellingStatus'].first['convertedCurrentPrice'].first['__value__'].to_f
+
+      # factor in shipping (if applicable)
+      price += auction['shippingInfo'].first['shippingServiceCost'].first['__value__'].to_f if auction['shippingInfo'].first.has_key?('shippingServiceCost')
+
+      mvs_auction.update_attributes({
+        mvs_game_id:  mvs_game_id,
+        title:        auction['title'].first,
+        url:          auction['viewItemURL'].first,
+        thumb:        auction['galleryURL'].first,
+        auction_end:  auction['listingInfo'].first['endTime'].first,
+        price:        price
+      })
+
+    end
+
+    nil
+
+  end
+
+  def send_request(method, params={})
+
     options = {
       :format => :json,
       :query => {
         # api header
-        'OPERATION-NAME'        => 'findCompletedItems',
+        'OPERATION-NAME'        => method,
         'SERVICE-VERSION'       => ebay_config['api']['finding']['version'],
         'SECURITY-APPNAME'      => ebay_config['production']['app_id'],
         'RESPONSE-DATA-FORMAT'  => 'JSON',
-        'REST-PAYLOAD'          => '',
-
-        # payload
-        'keywords' => "neo geo mvs",
-        'itemFilter(0).name' => 'SoldItemsOnly',
-        'itemFilter(0).value' => true,
-        'paginationInput.entriesPerPage' => 100, # max 100 allowed by api
-        'sortOrder' => 'PricePlusShippingLowest',
-
-        # pagination
-        'paginationInput.entriesPerPage' => limit,
-        'paginationInput.pageNumber' => offset
+        'REST-PAYLOAD'          => ''
       }
     }
-    
+
+    # merge in params
+    options[:query].merge!(params)
+
     # send httparty request
     response = self.class.get(ebay_config['api']['finding']['base_uri'], options)
 
-    return unless response.parsed_response.has_key?('findCompletedItemsResponse')
+    return unless response.parsed_response.has_key?("#{method}Response")
 
-    response.parsed_response['findCompletedItemsResponse'].first
+    response.parsed_response["#{method}Response"].first
   end
 
   # retrieve only the pagination details
-  def get_sold_listing_pagination
-
-    response = get_sold_listing_page
+  def get_pagination(response)
 
     return unless response.has_key?('paginationOutput')
 
