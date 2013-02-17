@@ -18,6 +18,8 @@ class Ebay
       find_auctions_for_mvs_game_by_id(game.id)
     end
 
+    nil
+
   end
 
   def find_auctions_for_mvs_game_by_id mvs_game_id
@@ -29,7 +31,7 @@ class Ebay
     game = MvsGame.find(mvs_game_id)
 
     # determine if game is part of a series and exclude other games in series
-    query = "\"#{game.title_english}\" MVS (cart,cartridge) -(hyper,marquee,artwork,flyers,lot)"
+    query = "\"#{game.title_english}\" MVS (cart,cartridge) -(hyper,F3,AtomisWave,marquee,artwork,flyers,lot,box,case,hardshell,kit,stickers,games)"
 
     total_pages = 1
     limit = 100
@@ -46,6 +48,8 @@ class Ebay
     }
     
     response = send_request(method, params)
+
+    return unless response['searchResult'].first.has_key?('item')
 
     # push first page to complete auctions listing
     auctions += response['searchResult'].first['item']
@@ -71,6 +75,8 @@ class Ebay
     end
 
     create_mvs_auctions(mvs_game_id, auctions)
+
+    nil
 
   end
 

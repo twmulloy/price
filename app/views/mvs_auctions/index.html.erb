@@ -19,7 +19,7 @@
   <tbody>
     <% @mvs_auctions.each do |mvs_auction| %>
       <tr>
-        <td><%= link_to mvs_auction.item_id, mvs_auction.url %></td>
+        <td><%= link_to mvs_auction.item_id, mvs_auction.url, target: '_new' %></td>
         <td><%= link_to mvs_auction.mvs_game.title_english, edit_mvs_game_path(mvs_auction.mvs_game_id) %></td>
         <td><%= mvs_auction.title %></td>
         <td><%= image_tag mvs_auction.thumb %></td>
