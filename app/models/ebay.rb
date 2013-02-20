@@ -15,23 +15,58 @@ class Ebay
     games = MvsGame.all
 
     games.each do |game|
-      find_auctions_for_mvs_game_by_id(game.id)
+      get_auctions_for_mvs_game(game)
     end
 
     nil
 
   end
 
-  def find_auctions_for_mvs_game_by_id mvs_game_id
+  def find_sold_auctions_for_all_mvs_games
+
+    games = MvsGame.all
+
+    games.each do |game|
+      get_sold_listing_for_mvs_game(game)
+    end
+
+    nil
+
+  end
+
+  def get_sold_listing_for_mvs_game game={}
+
+    method = 'findCompletedItems'
+
+    query = "\"#{game.title_english}\" MVS"
+
+    total_pages = 1
+    limit = 100
+    offset = 1
+
+    params = {
+      'keywords' => query,
+      'itemFilter(0).name' => 'SoldItemsOnly',
+      'itemFilter(0).value' => true,
+
+      # pagination
+      'paginationInput.entriesPerPage' => limit,
+      'paginationInput.pageNumber' => offset
+    }
+
+    response = send_request(method, params)
+
+    puts response
+  end
+
+  def get_auctions_for_mvs_game game={}
 
     method = 'findItemsAdvanced'
     
     auctions = []
 
-    game = MvsGame.find(mvs_game_id)
-
     # determine if game is part of a series and exclude other games in series
-    query = "\"#{game.title_english}\" MVS (cart,cartridge) -(hyper,F3,AtomisWave,marquee,artwork,flyers,lot,box,case,hardshell,kit,stickers,games)"
+    query = "\"#{game.title_english}\" MVS (cart,cartridge) -(hyper,F3,AtomisWave,marquee,artwork,flyers,lot,box,case,hardshell,kit,stickers,games,carts)"
 
     total_pages = 1
     limit = 100
@@ -74,7 +109,7 @@ class Ebay
       end until offset >= total_pages
     end
 
-    create_mvs_auctions(mvs_game_id, auctions)
+    create_mvs_auctions(game, auctions)
 
     nil
 
@@ -83,11 +118,11 @@ class Ebay
 private
 
   # iterate through all auctions from ebay api and create MvsAuction models
-  def create_mvs_auctions(mvs_game_id, auctions)
+  def create_mvs_auctions(game={}, auctions)
     
     auctions.each do |auction|
 
-      mvs_auction = MvsAuction.find_or_initialize_by_item_id(auction['itemId'].first)
+      mvs_auction = MvsAuction.find_or_initialize_by_item_id_and_mvs_game_id(auction['itemId'].first, game.id)
 
       # calculate price (of strings)
       price = auction['sellingStatus'].first['convertedCurrentPrice'].first['__value__'].to_f
@@ -96,7 +131,7 @@ private
       price += auction['shippingInfo'].first['shippingServiceCost'].first['__value__'].to_f if auction['shippingInfo'].first.has_key?('shippingServiceCost')
 
       mvs_auction.update_attributes({
-        mvs_game_id:  mvs_game_id,
+        mvs_game_id:  game.id,
         title:        auction['title'].first,
         url:          auction['viewItemURL'].first,
         thumb:        auction['galleryURL'].first,
@@ -109,6 +144,7 @@ private
     nil
 
   end
+
 
   def send_request(method, params={})
 

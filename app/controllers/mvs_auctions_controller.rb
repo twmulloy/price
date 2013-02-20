@@ -2,7 +2,7 @@ class MvsAuctionsController < ApplicationController
   # GET /mvs_auctions
   # GET /mvs_auctions.json
   def index
-    @mvs_auctions = MvsAuction.all
+    @mvs_auctions = MvsAuction.includes(:mvs_game).order("#{:mvs_games}.#{:title_english} ASC").all
 
     respond_to do |format|
       format.html # index.html.erb
